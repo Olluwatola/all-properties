@@ -7,6 +7,11 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { PassportModule } from '@nestjs/passport';
 import { User } from './typeorm/entities/User';
+import { MailerConfigModule } from './mailer/mailer.module';
+import { PasswordResetToken } from './typeorm/entities/PasswordResetToken';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { Media } from './typeorm/entities/Media';
+import { MediaModule } from './media/media.module';
 
 @Module({
   imports: [
@@ -23,13 +28,16 @@ import { User } from './typeorm/entities/User';
         username: configService.get<string>('DATABASE_USERNAME'),
         password: configService.get<string>('DATABASE_PASSWORD'),
         database: configService.get<string>('DATABASE_NAME'),
-        entities: [User],
+        entities: [User, PasswordResetToken, Media],
         synchronize: true,
       }),
     }),
     AuthModule,
     PassportModule,
     UserModule,
+    MailerConfigModule,
+    CloudinaryModule,
+    MediaModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -4,7 +4,9 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   DeleteDateColumn,
+  OneToMany,
 } from 'typeorm';
+import { PasswordResetToken } from './PasswordResetToken';
 
 export enum UserRole {
   REGULAR = 'regular',
@@ -49,6 +51,9 @@ export class User {
 
   @Column({ nullable: true })
   profilePicture: string;
+
+  @OneToMany(() => PasswordResetToken, (token) => token.user)
+  passwordResetTokens: PasswordResetToken[];
 
   @CreateDateColumn()
   createdAt: Date;
