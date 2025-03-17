@@ -12,6 +12,16 @@ import { PasswordResetToken } from './typeorm/entities/PasswordResetToken';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { Media } from './typeorm/entities/Media';
 import { MediaModule } from './media/media.module';
+import { PropertyModule } from './property/property.module';
+import { PopulateDataModule } from './populate-data/populate-data.module';
+import { Property } from './typeorm/entities/Property';
+import { State } from './typeorm/entities/State';
+import { LGA } from './typeorm/entities/LGA';
+import { Booking } from './typeorm/entities/Booking';
+import { Currency } from './typeorm/entities/Currency';
+import { PromoCode } from './typeorm/entities/PromoCode';
+import { PropertyBooked } from './typeorm/entities/PropertyBooked';
+import { PropertyPricing } from './typeorm/entities/PropertyPricing';
 
 @Module({
   imports: [
@@ -28,7 +38,19 @@ import { MediaModule } from './media/media.module';
         username: configService.get<string>('DATABASE_USERNAME'),
         password: configService.get<string>('DATABASE_PASSWORD'),
         database: configService.get<string>('DATABASE_NAME'),
-        entities: [User, PasswordResetToken, Media],
+        entities: [
+          User,
+          PasswordResetToken,
+          Media,
+          Property,
+          State,
+          LGA,
+          Booking,
+          Currency,
+          PromoCode,
+          PropertyBooked,
+          PropertyPricing,
+        ],
         synchronize: true,
       }),
     }),
@@ -38,6 +60,8 @@ import { MediaModule } from './media/media.module';
     MailerConfigModule,
     CloudinaryModule,
     MediaModule,
+    PropertyModule,
+    PopulateDataModule,
   ],
   controllers: [AppController],
   providers: [AppService],

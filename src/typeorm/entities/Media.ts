@@ -8,6 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from './User';
+import { Property } from './Property';
 
 @Entity()
 export class Media {
@@ -17,7 +18,7 @@ export class Media {
   @Column({ type: 'enum', enum: ['public', 'private'], default: 'public' })
   privacy_type: 'public' | 'private';
 
-  @ManyToOne(() => User, { nullable: true })
+  @ManyToOne(() => User)
   sender: User;
 
   @Column({ type: 'enum', enum: ['app', 'user', 'dispute'], nullable: true })
@@ -28,6 +29,9 @@ export class Media {
 
   @Column({ nullable: true })
   recipient_dispute_id: string; // Foreign key to Dispute entity (if applicable)
+
+  @ManyToOne(() => Property, { nullable: true, onDelete: 'CASCADE' })
+  property: Property;
 
   @Column({ nullable: true })
   description: string;

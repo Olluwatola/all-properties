@@ -5,9 +5,9 @@ import * as bcrypt from 'bcryptjs';
 import { LoginPayloadDto } from './dtos/LoginPayloadDto';
 import { UserService } from './../user/user.service';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PasswordResetToken } from 'src/typeorm/entities/PasswordResetToken';
+import { PasswordResetToken } from './../typeorm/entities/PasswordResetToken';
 import { Repository } from 'typeorm';
-import { User } from 'src/typeorm/entities/User';
+import { User } from './../typeorm/entities/User';
 import { MailerService } from '@nestjs-modules/mailer';
 import * as crypto from 'crypto';
 

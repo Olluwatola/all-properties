@@ -9,6 +9,30 @@ import { cloudinary } from './cloudinary/cloudinary.provider'; // Assuming you h
 export class CloudinaryService {
   constructor(private readonly configService: ConfigService) {}
 
+  deleteFile(publicId: string): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      void cloudinary.uploader.destroy(
+        publicId,
+        (error: UploadApiErrorResponse | undefined, result: any) => {
+          if (error) {
+            console.error(
+              `Error deleting file ${publicId} from Cloudinary`,
+              error,
+            );
+            return reject(error);
+          }
+          if (result.result !== 'ok') {
+            console.warn(
+              `Cloudinary did not confirm deletion for ${publicId}`,
+              result,
+            );
+          }
+          resolve();
+        },
+      );
+    });
+  }
+
   async uploadFile(
     file: Express.Multer.File,
     options: Record<string, any> = {},

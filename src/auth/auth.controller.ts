@@ -38,7 +38,8 @@ export class AuthController {
   @Post('login')
   @UseGuards(LocalGuard)
   login(@Req() req: Request) {
-    return req.user;
+    //console.log(req.user);
+    return { token: req.user };
   }
 
   @Post('forgot-password')
