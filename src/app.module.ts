@@ -22,6 +22,10 @@ import { Currency } from './typeorm/entities/Currency';
 import { PromoCode } from './typeorm/entities/PromoCode';
 import { PropertyBooked } from './typeorm/entities/PropertyBooked';
 import { PropertyPricing } from './typeorm/entities/PropertyPricing';
+import { CurrencyModule } from './currency/currency.module';
+import { BookingModule } from './booking/booking.module';
+import { PaymentModule } from './payment/payment.module';
+import { Payment } from './typeorm/entities/Payment';
 
 @Module({
   imports: [
@@ -50,6 +54,7 @@ import { PropertyPricing } from './typeorm/entities/PropertyPricing';
           PromoCode,
           PropertyBooked,
           PropertyPricing,
+          Payment,
         ],
         synchronize: true,
       }),
@@ -62,6 +67,9 @@ import { PropertyPricing } from './typeorm/entities/PropertyPricing';
     MediaModule,
     PropertyModule,
     PopulateDataModule,
+    CurrencyModule,
+    BookingModule,
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

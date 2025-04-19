@@ -6,6 +6,8 @@ import {
   Query,
   Req,
   UseGuards,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { SignupPayloadDto } from './dtos/SignupPayloadDto';
 import { ForgotPasswordPayloadDto } from './dtos/ForgotPasswordPayloadDto';
@@ -14,6 +16,7 @@ import { Request } from 'express';
 import { LocalGuard } from './local/local.guard';
 import { UserService } from './../user/user.service';
 import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
+import { LoginPayloadDto } from './dtos/LoginPayloadDto';
 
 @Controller('auth')
 export class AuthController {
@@ -36,8 +39,9 @@ export class AuthController {
   }
 
   @Post('login')
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   @UseGuards(LocalGuard)
-  login(@Req() req: Request) {
+  login(@Req() req: Request, @Body() loginPayloadDto: LoginPayloadDto) {
     //console.log(req.user);
     return { token: req.user };
   }

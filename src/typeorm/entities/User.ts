@@ -11,6 +11,7 @@ import { PasswordResetToken } from './PasswordResetToken';
 export enum UserRole {
   REGULAR = 'regular',
   ADMIN = 'admin',
+  SUPERADMIN = 'superadmin',
 }
 
 export enum KYCStatus {

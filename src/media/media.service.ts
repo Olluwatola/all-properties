@@ -28,7 +28,6 @@ export class MediaService {
   ) {
     const { privacy_type, recipient_type, recipient_user_id, description } =
       createMediaDto;
-    console.log(files.length);
     const uploadPromises = files.map(async (file) => {
       const uploadResult = await this.cloudinaryService.uploadFile(file, {
         folder: `media/${recipient_type}/${entityId}`,

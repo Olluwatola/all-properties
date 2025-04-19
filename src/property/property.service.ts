@@ -137,17 +137,30 @@ export class PropertyService {
 
     if (
       !property.approvedAt &&
-      (property.owner.id !== user.id || user.role !== UserRole.ADMIN)
+      property.owner.id !== user.id &&
+      user.role !== UserRole.ADMIN &&
+      user.role !== UserRole.SUPERADMIN
     ) {
-      throw new ForbiddenException(
-        'You are not allowed to update this property',
-      );
+      throw new ForbiddenException('You are not allowed to view this property');
     }
-    // Check if the property is available today
-    const today = new Date().toISOString().split('T')[0]; // Get today's date (YYYY-MM-DD)
-    const isBooked = await this.propertyBookedRepo.findOne({
-      where: { property, date: today },
-    });
+    // Get today's date (YYYY-MM-DD)
+    const today = new Date().toISOString().split('T')[0];
+
+    // Check if today falls between any existing startDate and endDate for the property
+    const isBooked = await this.propertyBookedRepo
+      .createQueryBuilder('propertyBooked')
+      .where('propertyBooked.propertyId = :propertyId', {
+        propertyId: property.id,
+      })
+      .andWhere('propertyBooked.startDate <= :today', { today })
+      .andWhere('propertyBooked.endDate >= :today', { today })
+      .getOne();
+
+    const pricingOptions = property.pricingOptions
+      .filter((price) => !(price.inactive_at && property.owner.id !== user.id))
+      .map((price) => {
+        return price; // Further transformation (if needed)
+      });
 
     return {
       id: property.id,
@@ -161,6 +174,7 @@ export class PropertyService {
       media: property.media.map((m) => {
         return { id: m.id, url: m.file_url };
       }),
+      pricingOptions,
       header: property.header?.file_url || null,
       isAvailableToday: !isBooked, // True if not booked today
       approval: property.approval, // Pending, approved, or rejected
@@ -217,14 +231,18 @@ export class PropertyService {
 
     // If `available` is defined, exclude properties that are booked on that date
     if (available) {
-      const bookedProperties = await this.propertyBookedRepo.find({
-        where: { date: available },
-        relations: ['property'],
-      });
+      const bookedProperties = await this.propertyBookedRepo
+        .createQueryBuilder('booked')
+        .select('booked.propertyId')
+        .where(':availableDate BETWEEN booked.startDate AND booked.endDate', {
+          availableDate: available,
+        })
+        .getRawMany();
 
       const bookedPropertyIds = bookedProperties.map(
-        (booking) => booking.property.id,
+        (row) => row.booked_propertyId, // raw field name: tableAlias_columnName
       );
+
       properties = properties.filter(
         (property) => !bookedPropertyIds.includes(property.id),
       );
@@ -302,11 +320,8 @@ export class PropertyService {
 
       savedProperty.header = arrayOfMedia[0]; // First media file as header
 
-      console.log('about to update');
       const cp = await queryRunner.manager.save(Property, property);
       await queryRunner.commitTransaction();
-      console.log(cp);
-      console.log('created p');
       return cp;
     } catch (error) {
       await queryRunner.rollbackTransaction();

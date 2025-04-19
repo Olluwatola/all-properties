@@ -26,12 +26,15 @@ import { UpdatePropertyDto } from './dto/UpdatePropertyDto';
 import { Request } from 'express';
 import { MediaService } from 'src/media/media.service';
 import { PropertyApprovalDto } from './dto/PropertyApprovalDto';
+import { PropertyPricingService } from './property-pricing/property-pricing.service';
+import { CreatePricingDto } from './dto/PropertyPricingDto';
 
 @Controller('property')
 export class PropertyController {
   constructor(
     private readonly propertyService: PropertyService,
     private readonly mediaService: MediaService,
+    private readonly propertyPricingService: PropertyPricingService,
   ) {}
 
   @Put(':id/approve')
@@ -65,7 +68,6 @@ export class PropertyController {
     @UploadedFiles() files: Express.Multer.File[],
     @Req() req: Request,
   ) {
-    console.log(req.user);
     const returnedProperty = await this.propertyService.updateProperty(
       id,
       updateDto,
@@ -94,15 +96,12 @@ export class PropertyController {
     @UploadedFiles() files: Express.Multer.File[],
     @Req() req: Request,
   ) {
-    console.log('in the controller');
-
     if (files.length < 1) {
       throw new BadRequestException(
         'you need to have at least one image uploaded',
       );
     }
 
-    console.log('no error');
     return this.propertyService.createProperty(dto, files, req.user as User);
   }
 
@@ -134,4 +133,52 @@ export class PropertyController {
   async getLGAsByState(@Param('stateId') stateId: string) {
     return await this.propertyService.getLGAsByState(stateId);
   }
+  /** 🔹 Add Pricing to a Property */
+  @Post(':id/pricing')
+  @UseGuards(JwtAuthGuard)
+  async addPricing(
+    @Param('id') propertyId: string,
+    @Body() createPricingDto: CreatePricingDto,
+    @Req() req: Request,
+  ) {
+    return this.propertyPricingService.addPricing(
+      propertyId,
+      createPricingDto,
+      req.user as User,
+    );
+  }
+
+  //no point
+  // @Get(':id/pricing')
+  // async getPricing(@Param('id') propertyId: string, @Req() req: Request) {
+  //   return this.propertyPricingService.getAllPricing(
+  //     propertyId,
+  //     req.user as User,
+  //   );
+  // }
+
+  //no updating price
+  // @Put('pricing/:id')
+  // @UseGuards(AuthGuard)
+  // async updatePricing(
+  //   @Param('id') pricingId: string,
+  //   @Body() updateDto: UpdatePricingDto,
+  //   @CurrentUser() user: User,
+  // ) {
+  //   return this.propertyPricingService.updatePricing(
+  //     pricingId,
+  //     updateDto,
+  //     user,
+  //   );
+  // }
+
+  //no deleting price
+  // @Delete('pricing/:id')
+  // @UseGuards(AuthGuard)
+  // async deletePricing(
+  //   @Param('id') pricingId: string,
+  //   @CurrentUser() user: User,
+  // ) {
+  //   return this.propertyPricingService.softDeletePricing(pricingId, user);
+  // }
 }

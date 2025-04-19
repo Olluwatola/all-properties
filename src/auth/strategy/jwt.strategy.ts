@@ -26,10 +26,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: JwtPayload) {
-    console.log(payload);
     const user = await this.userRepository.findOne({
       where: { id: payload.id },
-      select: ['id', 'role', 'kycStatus', 'profilePicture'], // Fetch only required fields
+      select: ['id', 'role', 'kycStatus', 'profilePicture', 'email'], // Fetch only required fields
     });
 
     if (!user) {

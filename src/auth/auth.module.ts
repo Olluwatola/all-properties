@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -10,6 +15,7 @@ import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PasswordResetToken } from './../typeorm/entities/PasswordResetToken';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { LoginValidationMiddlewareMiddleware } from './middlewares/login-validation-middleware/login-validation-middleware.middleware';
 
 @Module({
   imports: [
@@ -30,4 +36,10 @@ import { MailerModule } from '@nestjs-modules/mailer';
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy],
 })
-export class AuthModule {}
+export class AuthModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(LoginValidationMiddlewareMiddleware)
+      .forRoutes({ path: 'auth/login', method: RequestMethod.POST });
+  }
+}

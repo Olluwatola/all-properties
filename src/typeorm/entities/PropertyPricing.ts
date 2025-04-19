@@ -21,7 +21,10 @@ export class PropertyPricing {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => Property, { nullable: false, onDelete: 'CASCADE' })
+  @ManyToOne(() => Property, (property) => property.pricingOptions, {
+    nullable: false,
+    onDelete: 'SET NULL',
+  })
   property: Property;
 
   @Column({ type: 'enum', enum: BaseUnit })
@@ -33,8 +36,11 @@ export class PropertyPricing {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   price: number; // Price for the selected unit
 
-  @ManyToOne(() => Currency, { nullable: false, onDelete: 'CASCADE' })
+  @ManyToOne(() => Currency, { nullable: false, onDelete: 'RESTRICT' })
   currency: Currency;
+
+  @Column({ type: 'timestamp', nullable: true }) // Mark inactive pricing
+  inactive_at: Date;
 
   @CreateDateColumn()
   created_at: Date;

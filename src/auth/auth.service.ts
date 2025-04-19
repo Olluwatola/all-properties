@@ -27,7 +27,6 @@ export class AuthService {
     const { email, password } = loginPayloadDto;
 
     const findUser = await this.userService.findUserByEmail(email);
-    console.log(findUser);
     if (!findUser) return null;
 
     const isPasswordValid: boolean = await bcrypt.compare(
@@ -67,8 +66,6 @@ export class AuthService {
     //   subject: 'Password Reset',
     //   text: `Click the link to reset your password: http://yourapp.com/reset-password?token=${token}`,
     // });
-
-    console.log(token);
   }
 
   async resetPassword(token: string, newPassword: string): Promise<void> {

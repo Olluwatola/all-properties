@@ -12,6 +12,7 @@ import { State } from './State';
 import { LGA } from './LGA';
 import { Media } from './Media';
 import { User } from './User';
+import { PropertyPricing } from './PropertyPricing';
 
 export enum PropertyType {
   EVENT_HALL = 'eventhall',
@@ -42,6 +43,11 @@ export class Property {
   @ManyToOne(() => User, { nullable: false, onDelete: 'CASCADE' })
   owner: User;
 
+  @OneToMany(() => PropertyPricing, (pricing) => pricing.property, {
+    cascade: false,
+  })
+  pricingOptions: PropertyPricing[];
+
   @Column({ type: 'text' })
   description: string;
 
@@ -63,7 +69,7 @@ export class Property {
   @Column({ type: 'enum', enum: PropertyApprovalType })
   approval: PropertyApprovalType;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   approvedAt: Date;
 
   @CreateDateColumn()

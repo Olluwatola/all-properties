@@ -21,13 +21,11 @@ export class MediaController {
     @UploadedFiles() files: Express.Multer.File[],
     @Body() createMediaDto: CreateMediaDto,
   ) {
-    console.log(files);
     const returnArr = await this.mediaService.uploadMedia(
       createMediaDto,
       files,
       'test-upload',
     );
-    console.log(returnArr);
     return returnArr;
   }
   @Get(':id')

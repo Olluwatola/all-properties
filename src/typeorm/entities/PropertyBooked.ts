@@ -20,7 +20,10 @@ export class PropertyBooked {
   booking: Booking;
 
   @Column({ type: 'date' })
-  date: string; // YYYY-MM-DD format
+  startDate: Date; // YYYY-MM-DD format
+
+  @Column({ type: 'date' })
+  endDate: Date; // YYYY-MM-DD format
 
   @CreateDateColumn()
   created_at: Date;

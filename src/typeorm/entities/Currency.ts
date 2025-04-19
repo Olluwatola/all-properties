@@ -21,7 +21,7 @@ export class Currency {
   name: string; // Example: "US Dollar", "Naira"
 
   @Column({ type: 'timestamp', nullable: true })
-  inactiveAt?: Date;
+  inactive_at?: Date | null;
 
   @Column({ type: 'int' })
   decimals: number; // Decimal places (e.g., 2 for "10.50 USD")

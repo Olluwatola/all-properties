@@ -53,6 +53,9 @@ export class PromoCode {
   @Column({ type: 'text', nullable: true })
   description?: string;
 
+  @Column({ nullable: true })
+  expires_at?: Date;
+
   @CreateDateColumn()
   created_at: Date;
 
